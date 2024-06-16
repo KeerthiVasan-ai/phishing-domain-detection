@@ -11,7 +11,7 @@ def obtain_features(url,domain,directory,file,params)->list:
     directory_features = get_directory_property(directory)
     file_features = get_file_property(file)
     params_features = get_paramater_property(params,url)
-    special_features = get_special_features(url)
+    special_features = get_special_features(domain)
     features = url_features+domain_features+directory_features+file_features+params_features+special_features
     print(len(features))
     return features
