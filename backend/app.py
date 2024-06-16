@@ -5,7 +5,7 @@ from flask import Flask,request,jsonify
 from flask_cors import CORS
 import joblib
 
-model = joblib.load("D:\\phishing-domain-detection\\models\\RF-Classifier-v1")
+model = joblib.load("models/RF-Classifier-v1")
 
 app = Flask(__name__)
 CORS(app)
