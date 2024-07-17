@@ -16,7 +16,7 @@ class SpecialFeatures:
             response_time = (end_time - start_time) * 10
             return response_time
         except Exception as e:
-            return 0
+            return -1
 
     def domain_spf(self):
         try:
@@ -26,7 +26,7 @@ class SpecialFeatures:
                     return 1
             return 0
         except Exception as e:
-            return 0
+            return -1
 
     def asn_ip(self):
         try:
@@ -36,9 +36,9 @@ class SpecialFeatures:
             if response.status_code == 200:
                 data = response.json()
                 return data['as_number']
-            return -1
-        except Exception as e:
             return 0
+        except Exception as e:
+            return -1
 
     def time_domain_activation(self):
         try:
@@ -49,9 +49,9 @@ class SpecialFeatures:
                     creation_date = creation_date[0]
                 current_date = datetime.date.today()
                 return (current_date - creation_date.date()).days
-            return -1
-        except Exception as e:
             return 0
+        except Exception as e:
+            return -1
 
     def time_domain_expiration(self):
         try:
@@ -62,16 +62,16 @@ class SpecialFeatures:
                     expiration_date = expiration_date[0]
                 current_date = datetime.date.today()
                 return (expiration_date.date() - current_date).days
-            return -1
-        except Exception as e:
             return 0
+        except Exception as e:
+            return -1
 
     def qty_ip_resolved(self):
         try:
             answers = dns.resolver.resolve(self.domain, 'A')
             return len(answers)
         except Exception as e:
-            return 0
+            return -1
 
     def qty_nameservers(self):
         try:
@@ -80,7 +80,7 @@ class SpecialFeatures:
         except dns.resolver.NoAnswer:
             return 0
         except Exception as e:
-            return 0
+            return -1
 
     def qty_mx_servers(self):
         try:
@@ -89,35 +89,35 @@ class SpecialFeatures:
         except dns.resolver.NoAnswer:
             return 0
         except Exception as e:
-            return 0
+            return -1
 
     def ttl_hostname(self):
         try:
             answers = dns.resolver.resolve(self.domain, 'A')
             return answers.rrset.ttl
         except Exception as e:
-            return 0
+            return -1
 
     def tls_ssl_certificate(self):
         try:
             response = requests.get(f'https://{self.domain}', timeout=5)
             return 1 if response.status_code == 200 and response.url.startswith('https') else 0
         except Exception as e:
-            return 0
+            return -1
 
     def qty_redirects(self):
         try:
             response = requests.get(f'http://{self.domain}', timeout=5)
             return len(response.history)
         except Exception as e:
-            return 0
+            return -1
 
     def url_google_index(self):
         try:
             response = requests.get(f'https://www.google.com/search?q=site:{self.domain}')
             return 1 if "did not match any documents" not in response.text else 0
         except Exception as e:
-            return 0
+            return -1
 
     def domain_google_index(self):
         return self.url_google_index()
@@ -132,4 +132,4 @@ class SpecialFeatures:
                     return 1
             return 0
         except Exception as e:
-            return 0
+            return -1
