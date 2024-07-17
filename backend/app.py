@@ -5,7 +5,7 @@ from flask import Flask,request,jsonify
 from flask_cors import CORS
 import joblib
 
-model = joblib.load("D:\\phishing-domain-detection\\models\\RF-Classifier-v1")
+model = joblib.load("D:\\phishing-domain-detection\\models\\RF-Classifier-v2")
 
 app = Flask(__name__)
 CORS(app)
@@ -20,9 +20,9 @@ def obtain_url():
     prediction = model.predict(np.array(features).reshape(1,-1))
     print(prediction)
     if prediction[0]  <= 0.5:
-        return jsonify({"domain":"It is not a Phishing Domain"})
+        return jsonify({"response":True})
     else:
-        return jsonify({"domain":"It is a Phishing Domain"})
+        return jsonify({"response":False})
 
 if __name__ == "__main__":
     app.run(debug=True)
