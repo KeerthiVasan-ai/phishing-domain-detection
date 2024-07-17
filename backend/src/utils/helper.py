@@ -17,18 +17,23 @@ def split_domain(url):
 def split_directory_and_file(url):
     files = ""
     directory = ""
-    append_factor = "/"
     if url is not None:
         url = re.split("/",url)
         for file in url:
             if file.find(".") != -1:
                 files = file
             else:
+                files = None
                 directory += f"/{file}"
+        else:
+            directory = None
+
         if files == "":
             files = url[-1]
-            append_factor = ""
-            directory = directory.replace(files,"")
-        return files,directory[1:]+append_factor
+            if directory is not None:
+                directory = directory.replace(files,"")
+        else:
+            files = None
+        return files,directory
     else:
         return None,None

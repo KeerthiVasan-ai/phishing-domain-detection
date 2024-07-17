@@ -1,0 +1,12 @@
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 170px; 
+}
+
+body{
+    background-image: url('/assets/background-phis.jpg');
+    object-fit: cover;
+    object-position: center;
+}
