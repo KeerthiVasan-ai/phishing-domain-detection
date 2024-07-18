@@ -7,12 +7,14 @@ import joblib
 
 model = joblib.load("D:\\phishing-domain-detection\\models\\RF-Classifier-v2")
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder='./build', static_url_path='/')
 CORS(app)
 
 @app.route("/submit",methods=['POST'])
 def obtain_url():
     url = request.json.get("url")
+    if not (url.startswith("http://") or url.startswith("https://")):
+        url = 'http://' + url
     URL,DOMAIN,DIRECTORY,FILES,PARAMETER = process_url(url)
     print(URL,DOMAIN,DIRECTORY,FILES,PARAMETER)
     features = obtain_features(URL,DOMAIN,DIRECTORY,FILES,PARAMETER)
