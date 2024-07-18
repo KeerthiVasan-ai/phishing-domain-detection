@@ -1,11 +1,13 @@
 from src.features.extract_features import obtain_features
 from src.utils.process_url import process_url
+import os
 import numpy as np
 from flask import Flask,request,jsonify
 from flask_cors import CORS
 import joblib
 
-model = joblib.load("./models/RF-Classifier-v2")
+# model = joblib.load("./models/RF-Classifier-v2")
+model = os.path.join(os.path.dirname(__file__), '..', 'models', 'RF-Classifier-v2')
 
 app = Flask(__name__,static_folder='./build', static_url_path='/')
 CORS(app)
