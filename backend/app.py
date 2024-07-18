@@ -6,11 +6,16 @@ from flask import Flask,request,jsonify
 from flask_cors import CORS
 import joblib
 
-# model = joblib.load("./models/RF-Classifier-v2")
-model = os.path.join(os.path.dirname(__file__), '..', 'models', 'RF-Classifier-v2')
+model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'RF-Classifier-v2')
 
-app = Flask(__name__,static_folder='./build', static_url_path='/')
-CORS(app)
+model = joblib.load(model_path)
+
+app = Flask(__name__, static_folder='build', static_url_path='/')
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+@app.route('/')
+def serve_index():
+    return app.send_static_file('index.html')
 
 @app.route("/submit",methods=['POST'])
 def obtain_url():
