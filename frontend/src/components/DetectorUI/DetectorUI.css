@@ -1,12 +1,17 @@
-.search-container {
+.detector-ui {
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 170px; 
+    background-image: url('/assets/background-phis.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow-x: hidden; /* Ensure no horizontal scrolling */
 }
 
-body{
-    background-image: url('/assets/background-phis.jpg');
-    object-fit: cover;
-    object-position: center;
+
+.content {
+    max-width: 700px; /* Adjust as necessary */
+    width: 90%;
+    padding: 20px;
 }
