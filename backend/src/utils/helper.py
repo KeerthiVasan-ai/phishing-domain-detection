@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlparse, unquote
 
 def split_parameters(url):
     url = url.split("?")
@@ -37,3 +38,43 @@ def split_directory_and_file(url):
         return files,directory
     else:
         return None,None
+    
+
+def split_url(url):
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc
+    path = parsed_url.path
+    parameters = parsed_url.query
+
+    domain = domain.split(":")[0]
+
+    file = None
+    folders = None
+
+    if path:
+        path = unquote(path)
+        segments = path.strip("/").split("/")
+        if segments[-1]:  
+            if "." in segments[-1]:  
+                file = segments[-1]
+                folders = "/".join(segments[:-1])
+            else:
+                folders = "/".join(segments)
+        else:
+            if len(segments) > 1:
+                segments = segments[:-1]
+                if "." in segments[-1]: 
+                    file = segments[-1]
+                    folders = "/".join(segments[:-1])
+                else:
+                    folders = "/".join(segments)
+    if parameters=="":
+        parameters = None
+    
+    if folders=="":
+        folders = None
+
+    if file == "":
+        file = None
+
+    return url, domain, folders, file, parameters

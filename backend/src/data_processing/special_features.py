@@ -1,135 +1,97 @@
 import time
-import dns.resolver 
 import whois
-import datetime
+from ipwhois import IPWhois
+import socket
+from datetime import datetime
 import requests
 
 class SpecialFeatures:
-    def __init__(self,url):
-        self.domain = url
+    def __init__(self,url,domain):
+        self.url = url
+        self.domain = domain
+        self.domain_info = whois.whois(domain)
     
     def time_response(self):
         try:
             start_time = time.time()
-            dns.resolver.resolve(self.domain, 'A')
-            end_time = time.time()
-            response_time = (end_time - start_time) * 10
-            return response_time
+            ip = socket.gethostbyname(self.domain)
+            return (datetime.now() - start_time).total_seconds()
         except Exception as e:
-            return -1
+            return 0
 
     def domain_spf(self):
-        try:
-            answers = dns.resolver.resolve(self.domain, 'TXT')
-            for record in answers:
-                if 'v=spf1' in str(record):
-                    return 1
-            return 0
-        except Exception as e:
-            return -1
+        return None
 
     def asn_ip(self):
         try:
-            answers = dns.resolver.resolve(self.domain, 'A')
-            ip = answers[0].address
-            response = requests.get(f'https://api.iptoasn.com/v1/as/ip/{ip}')
-            if response.status_code == 200:
-                data = response.json()
-                return data['as_number']
-            return 0
+            ip = socket.gethostbyname(self.domain)
+            obj = IPWhois(ip)
+            results = obj.lookup_rdap(asn_methods=["whois","http"])
+            return results["asn"]
         except Exception as e:
-            return -1
+            return 0
 
     def time_domain_activation(self):
         try:
-            domain_info = whois.whois(self.domain)
-            if domain_info.creation_date:
-                creation_date = domain_info.creation_date
-                if isinstance(creation_date, list):
-                    creation_date = creation_date[0]
-                current_date = datetime.date.today()
-                return (current_date - creation_date.date()).days
-            return 0
+            if isinstance(self.domain_info.creation_date, list):
+                self.domain_info.creation_date = self.domain_info.creation_date[0]
+            return (datetime.now() - self.domain_info.creation_date).days if self.domain_info.creation_date else None
         except Exception as e:
-            return -1
+            return 0
 
     def time_domain_expiration(self):
         try:
-            domain_info = whois.whois(self.domain)
-            if domain_info.expiration_date:
-                expiration_date = domain_info.expiration_date
-                if isinstance(expiration_date, list):
-                    expiration_date = expiration_date[0]
-                current_date = datetime.date.today()
-                return (expiration_date.date() - current_date).days
-            return 0
+            if isinstance(self.domain_info.expiration_date, list):
+                self.domain_info.expiration_date = self.domain_info.expiration_date[0]
+            return (self.domain_info.expiration_date - datetime.now()).days if self.domain_info.expiration_date else None
         except Exception as e:
-            return -1
+            return 0
 
     def qty_ip_resolved(self):
         try:
-            answers = dns.resolver.resolve(self.domain, 'A')
-            return len(answers)
+            return len(socket.gethostbyname_ex(self.domain)[2])
         except Exception as e:
-            return -1
+            return 0
 
     def qty_nameservers(self):
         try:
-            answers = dns.resolver.resolve(self.domain, 'NS')
-            return len(answers)
-        except dns.resolver.NoAnswer:
-            return 0
+            return len(self.domain_info.name_servers)
         except Exception as e:
-            return -1
+            return 0
 
     def qty_mx_servers(self):
         try:
-            answers = dns.resolver.resolve(self.domain, 'MX')
-            return len(answers)
-        except dns.resolver.NoAnswer:
-            return 0
+           return len(self.domain_info.mx) if self.domain_info.mx else None
         except Exception as e:
-            return -1
+            return 0
 
     def ttl_hostname(self):
-        try:
-            answers = dns.resolver.resolve(self.domain, 'A')
-            return answers.rrset.ttl
-        except Exception as e:
-            return -1
+        return None
 
     def tls_ssl_certificate(self):
         try:
-            response = requests.get(f'https://{self.domain}', timeout=5)
-            return 1 if response.status_code == 200 and response.url.startswith('https') else 0
+            return requests.get(self.url).url.startswith('https://')
         except Exception as e:
-            return -1
+            return 0
 
     def qty_redirects(self):
         try:
             response = requests.get(f'http://{self.domain}', timeout=5)
             return len(response.history)
         except Exception as e:
-            return -1
+            return 0
 
     def url_google_index(self):
         try:
-            response = requests.get(f'https://www.google.com/search?q=site:{self.domain}')
-            return 1 if "did not match any documents" not in response.text else 0
+            return int("http://www.google.com/search?q=site:" + self.url in requests.get("http://www.google.com/search?q=site:" + self.url).text)
         except Exception as e:
-            return -1
+            return 0
 
     def domain_google_index(self):
-        return self.url_google_index()
+        return int("http://www.google.com/search?q=site:" + self.domain in requests.get("http://www.google.com/search?q=site:" + self.domain).text)
 
     def url_shortened(self):
-        shortened_domains = ['bit.ly', 'goo.gl', 'tinyurl.com', 't.co', 'ow.ly', 'bit.do', 'shorte.st', 'adf.ly']
         try:
-            response = requests.head(f'http://{self.domain}', allow_redirects=True, timeout=5)
-            final_url = response.url
-            for sd in shortened_domains:
-                if sd in final_url:
-                    return 1
-            return 0
+            return int(len(self.url) < len(requests.get(self.url).url))
         except Exception as e:
-            return -1
+            return 0

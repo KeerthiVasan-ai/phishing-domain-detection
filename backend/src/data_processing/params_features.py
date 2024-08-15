@@ -9,16 +9,7 @@ class ParameterFeatures:
         return len(self.params)
     
     def is_tld_present(self):
-        parsed_url = urlparse(self.url)
-        domain = parsed_url.netloc.split(".")[-1]
-        parameters = self.params.split("&")
-        for params in parameters:
-            tdl = params.split("=")[1]
-            if(tdl == domain):
-                return 1
-        return 0
+        return int(any(tld in self.params for tld in ['.com', '.net', '.org', '.gov', '.edu', '.mil', '.int']))
     
     def params_count(self):
-        parameters = self.params.split("&")
-        print(parameters)
-        return len(parameters)
+        return len(self.params.split('&')) if self.params else 0

@@ -5,22 +5,13 @@ class DomainFeatures:
         self.domain = domain
 
     def get_vowels_count(self):
-        return sum(1 for char in self.domain if char.lower() in 'aeiou')
+        return sum([self.domain.lower().count(v) for v in 'aeiou'])
 
     def get_domain_length(self):
         return len(self.domain)
 
     def is_domain_in_ip(self):
-        ip_address_pattern = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$'
-        domain_in_ip = bool(re.match(ip_address_pattern, self.domain))
-        if domain_in_ip:
-            return 1
-        else:
-            return 0
+        return int(bool(re.match(r'^\d{1,3}(\.\d{1,3}){3}$', self.domain)))
 
     def is_server_or_client_domain(self):
-        value = any(keyword in self.domain for keyword in ["server", "client"])
-        if value:
-            return 1
-        else:
-            return 0
+        return int('server' in self.domain or 'client' in self.domain)
