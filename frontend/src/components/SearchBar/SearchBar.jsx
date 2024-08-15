@@ -45,7 +45,7 @@ const SearchBar = () => {
     return (
         <div className='search-box'>
             <h1 className='slogan'>Instantly Verify Legitimate Sites with AntiPhish AI</h1>
-            <p>Provide your link with protocol like https:// or https://</p>
+            <p>Provide your link with protocol like http:// or https://</p>
             <input 
                 type="text" 
                 value={url}
