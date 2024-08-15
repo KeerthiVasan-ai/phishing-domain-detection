@@ -20,11 +20,15 @@ def serve_index():
 @app.route("/submit",methods=['POST'])
 def obtain_url():
     url = request.json.get("url")
-    if not (url.startswith("http://") or url.startswith("https://")):
-        url = 'https://' + url
     secure = True if url.startswith("https://") else False
     URL,DOMAIN,DIRECTORY,FILES,PARAMETER = process_url(url)
     print(URL,DOMAIN,DIRECTORY,FILES,PARAMETER)
+    print(f"URL: {URL}")
+    print(f"DOMAIN: {DOMAIN}")
+    print(f"DIRECTORY: {DIRECTORY}")
+    print(f"FILES: {FILES}")
+    print(f"PARAMETER: {PARAMETER}")
+
     features = obtain_features(URL,DOMAIN,DIRECTORY,FILES,PARAMETER)
     print(features)
     prediction = model.predict(np.array(features).reshape(1,-1))
@@ -33,6 +37,7 @@ def obtain_url():
         return jsonify({"response":True,"secure":secure})
     else:
         return jsonify({"response":False,"secure":secure})
-
+    
+    
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
