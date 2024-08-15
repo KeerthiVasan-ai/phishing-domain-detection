@@ -12,6 +12,15 @@ const SearchBar = () => {
     }
 
     const handleSubmission = async () => {
+        if(url === ""){
+            Swal.fire({
+                title:"No Input",
+                text:"Provide the Link",
+                icon:"question",
+                confirmButtonText:"Okay"
+            })
+            return
+        }
         Swal.showLoading();
         const res = await axios.post('/submit', { url });
         Swal.hideLoading();
@@ -36,6 +45,7 @@ const SearchBar = () => {
     return (
         <div className='search-box'>
             <h1 className='slogan'>Instantly Verify Legitimate Sites with AntiPhish AI</h1>
+            <p>Provide your link with protocol like https:// or https://</p>
             <input 
                 type="text" 
                 value={url}
