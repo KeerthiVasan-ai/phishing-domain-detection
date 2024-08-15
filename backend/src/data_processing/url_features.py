@@ -13,9 +13,5 @@ class URLFeatures:
     def get_length(self)->int:
         return len(self.url)
 
-    def is_email_present(self)->bool:
-        email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-        if re.search(email_pattern, self.url):
-            return 1
-        else:
-            return 0
+    def is_email_present(self)->int:
+        return int("mailto:" in self.url)

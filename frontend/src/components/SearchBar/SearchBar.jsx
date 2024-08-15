@@ -13,7 +13,7 @@ const SearchBar = () => {
 
     const handleSubmission = async () => {
         Swal.showLoading();
-        const res = await axios.post('http://localhost:5000/submit', { url });
+        const res = await axios.post('/submit', { url });
         Swal.hideLoading();
         let isPhshing = res.data.response;
         console.log(isPhshing)

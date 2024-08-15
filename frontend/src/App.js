@@ -1,4 +1,3 @@
-import './App.css';
 import DetectorUI from './components/DetectorUI/DetectorUI';
 
 function App() {
