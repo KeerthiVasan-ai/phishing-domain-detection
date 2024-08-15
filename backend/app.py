@@ -20,8 +20,10 @@ def serve_index():
 @app.route("/submit",methods=['POST'])
 def obtain_url():
     url = request.json.get("url")
+
     if not (url.startswith("http://") or url.startswith("https://")):
-        url = 'http://' + url
+        url = 'https://' + url
+
     secure = True if url.startswith("https://") else False
     URL,DOMAIN,DIRECTORY,FILES,PARAMETER = process_url(url)
     print(URL,DOMAIN,DIRECTORY,FILES,PARAMETER)
